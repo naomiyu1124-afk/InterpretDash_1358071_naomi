@@ -14,7 +14,7 @@
 
 ## 三個資料集的 EBM AUC 差異分析 (Case Study)
 
-> **Answer:** > 三個數據集之間的 AUC 表現差異，主要源於 **「類別不平衡 (Class Imbalance)」** 與 **「數據稀疏性 (Data Sparsity)」**。
+> **Answer:** > 三個數據集之間的 AUC 表現差異，主要源於 **「類別不平衡 (Class Imbalance)」** 與 **「數據稀疏性 (Data Sparsity)」證明於最後一組code**。
 
 ### 1. Diabetes (糖尿病資料集) —— 效能最優
 * **表現**：通常擁有最高的 AUC (約 0.85 - 0.95)。

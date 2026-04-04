@@ -20,20 +20,32 @@
     * 撰寫 **維度對齊邏輯**：`if len(x) == len(y) + 1: x = x[:-1]`。
     * 改用 `plt.step(where='post')` 繪製，呈現 EBM 特有的階梯函數 (Step Function)。
 
-### 🔍 重大發現：Stroke 資料集的 $N=1$ 陷阱
-* **觀察**：`gender` 特徵在 `Other` 類別出現劇烈負分 (約 -0.42)。
-* **診斷**：透過 `value_counts()` 發現 `Other` 樣本數僅有 **1 筆**。
-* **結論**：此為 **小樣本偏差 (Small Sample Bias)** 導致的 **過度擬合 (Overfitting)**。在醫療場景中，此分數不具臨床代表性，應視為 **統計假象 (Statistical Artifact)**。
+### 🛡️ 數據清理與品質保證 (Data Cleaning & QA Pipeline)
+為了建立穩健的機器學習模型，本專案開發了整合式的自動化清洗腳本：
+1. **隱性缺失揭露**：全面掃描並標準化 `Unknown`, `?`, `NAN` 等 6 種偽裝空值。
+2. **自動型態校正 (Type Recovery)**：針對醫療數據中常見的型態誤判執行遍歷檢查，確保所有生理特徵回歸數值計算格式。
+3. **即時熱圖驗證 (Real-time Heatmap)**：在補值程序後立即生成 **Seaborn Heatmap**，透過視覺化手段確保全資料集缺失率降為 0%。
+**結果**：成功消除了 `Heart` 與 `Stroke` 資料集中的數據噪音，為後續 Random Forest 的 AUC 評估提供了高品質的基礎數據。
+
+
+### 🕵️ 預測誤差之臨床歸因 (Error Attribution)
+進一步針對 6 例漏診 (FN) 與 13 例誤報 (FP) 進行個案審計：
+
+
+* **漏診風險分析 (FN Risk)**：發現模型在處理「低齡且生理指標正常」之患者時存在判斷盲點。這揭示了單一特徵（如年齡）在權重分配中可能過於主導，掩蓋了微小的臨床異常。
+* **預處理影響證明**：部分誤判個案與原始數據中 `ca` (血管阻塞數) 的缺失值高度重合。這證明了「中位數補值」雖然能讓模型運行，但可能在邊界個案中引入人為的「健康偏誤」。
+* **臨床建議**：未來部署應調降分類閾值（Threshold），以犧牲部分特異度為代價，換取更高的臨床安全性（減少漏診）。
+
 
 ---
 
 ## 3. 模型效能對比 (Model Benchmarking)
 
-為了驗證 **EBM (Explainable Boosting Machine)** 的實力，針對三個醫學資料集進行了 Glassbox 模型 PK。
+為了驗證 **EBM (Explainable Boosting Machine)** 的實力，針對三個醫學資料集進行了 Glassbox 模型 。
 
 ### 📊 AUC 效能對比表
 
-| 資料集 | EBM AUC (模型 1) | Decision Tree (模型 2) | Logistic Regression (模型 3) |
+| 資料集 | EBM AUC (模型 1) | Randon forset (模型 2) | Logistic Regression (模型 3) |
 | :--- | :--- | :--- | :--- |
 | **Heart** |0.9121 |0.8617 | 0.9008|
 | **Stroke** | 0.8435| 0.7969|0.8401 |
