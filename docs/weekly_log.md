@@ -17,11 +17,6 @@
 
 ## Q2：GAM Changer 中的 `asthma` Shape Function 描述
 
-在 **GAM Changer** 的介面中，針對二元類別特徵 `asthma`（氣喘）的觀察如下：
-
-* **Visual Representation:** 當 `asthma` 從 0 (無氣喘) 變為 1 (有氣喘) 時，Shape Function 的 y 軸數值呈現 **明顯下降 (Downward Jump/Negative Direction)**。
-* **Clinical Paradox:** 這代表在模型邏輯中，罹患氣喘反而會「降低」死亡風險的預測分值（Score）。
-* **User Reflection:** This graph directly visualizes the statistical bias where asthma patients, who receive intensive care, appear to have a lower risk of mortality in the raw dataset.
 
 ---
 
